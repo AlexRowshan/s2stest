@@ -1,0 +1,208 @@
+Snap2Spoon Design Document
+Executive Summary
+Snap2Spoon is an iOS application that leverages AI to generate personalized recipes based on two primary inputs:
+
+Photos of grocery receipts (Snap)
+Manual ingredient input via chat (Chat)
+The app aims to reduce food waste, inspire creativity in cooking, and simplify meal planning by suggesting recipes that utilize ingredients the user already has on hand.
+
+App Architecture
+Core Components
+Authentication System
+Sign in with Apple integration
+User persistence via UserDefaults
+CloudKit integration for secure data storage
+Recipe Generation Engine
+OpenAI API integration (GPT models)
+Image processing for receipt scanning
+Natural language processing for ingredient extraction
+JSON parsing and validation
+Recipe Management System
+Local storage via UserDefaults
+Cloud synchronization via CloudKit
+CRUD operations for user recipes
+UI Framework
+SwiftUI-based interface
+Tab-based navigation
+Custom animations and transitions
+Responsive design elements
+Data Flow
+
+Copy
+User Input (Image/Text) → OpenAI API → JSON Response → Recipe Model → 
+UI Display → CloudKit Storage → User Devices
+User Interface
+Tab-Based Navigation
+The app employs a tab-based navigation system with three primary sections:
+
+Home Tab
+Welcome screen
+Quick access to recipe generation methods
+Featured recipes or tips
+My Recipes Tab
+Chronologically sorted list of saved recipes (newest first)
+Expandable recipe cards with details
+Delete functionality via context menu
+Refresh button to sync with CloudKit
+Chat Tab
+Interactive ingredient input interface
+Editable ingredient bubbles
+Allergy specification field
+Recipe generation trigger
+Key Screens
+Login View
+Sign in with Apple button
+Branded welcome text with custom font
+Clean, minimalist design
+Chat View
+Gradient background (green to white)
+Interactive ingredient entry with add/edit/delete functionality
+Allergies input field
+Generate Recipe button with conditional styling
+Loading View
+Circular animation with rotating food icons
+Central receipt icon
+Progress indicator
+Branded header
+Recipe View
+Expandable recipe cards
+Detailed view with:
+Duration and difficulty indicators
+Ingredient list with bullet points
+Step-by-step instructions
+Delete functionality
+Technical Implementation
+State Management
+The app uses the following state objects:
+
+AppState: Manages authentication state and user identity
+RecipeViewModel: Handles recipe data operations and API communication
+CapturedImageViewModel: Manages the camera and image processing workflows
+API Integration
+The app communicates with OpenAI's API using:
+
+GPT-3.5 Turbo for chat-based recipe generation
+GPT-4o for image-based recipe generation (receipt scanning)
+Custom prompts designed to generate structured JSON responses
+Data Models
+RecipeModel
+swift
+
+Copy
+struct RecipeModel: Identifiable, Codable, Equatable {
+    var id: String
+    var userId: String
+    var name: String
+    var duration: String
+    var difficulty: String
+    var ingredients: [String]
+    var instructions: [String]
+}
+ChatMessage
+swift
+
+Copy
+struct ChatMessage {
+    var id: String
+    var content: String
+    var dateCreated: Date
+    var sender: MessageSender
+}
+CloudKit Integration
+Public database usage for recipe storage
+Record type: "Recipe"
+Queries filtered by userId
+Automatic synchronization on app launch and after recipe creation
+User Flows
+Receipt Scanning Flow
+User navigates to home screen
+User captures photo of receipt
+Loading animation displays
+Receipt is processed by OpenAI API
+Recipe is generated and saved
+User is navigated to recipe detail view
+Chat Input Flow
+User navigates to chat tab
+User inputs ingredients manually
+User specifies any allergies
+User taps "Generate Recipe"
+Loading animation displays
+Ingredients are processed by OpenAI API
+Recipe is generated and saved
+User is navigated to recipe detail view
+Recipe Management Flow
+User navigates to My Recipes tab
+User views list of recipes (newest first)
+User taps recipe to expand details
+User can delete recipe via context menu
+User can refresh via sync button
+Visual Design Elements
+Color Palette
+Primary Green: #7cd16b / #80D05B (brand color)
+Secondary Green: #8AC36F (gradient start)
+Background White: #FCFCFC
+Text: White (on green backgrounds), Black (on white backgrounds)
+Typography
+Brand Font: "Scripto" (custom font for headers)
+Primary Font: "Avenir" (for body text and UI elements)
+Font Sizes: 32px (headers), 18px (subheaders), 14-16px (body text)
+UI Components
+Rounded corners (12px radius)
+Subtle shadows (opacity 0.2-0.8)
+Gradient backgrounds
+Custom animations for loading and transitions
+Future Enhancements
+Ingredient Recognition Improvements
+Enhanced OCR for better receipt scanning
+Product name to ingredient mapping
+Recipe Customization
+Ability to edit generated recipes
+Serving size adjustments
+Dietary preference filters
+Social Features
+Recipe sharing
+Community recipe discovery
+Ratings and reviews
+Shopping List Integration
+Missing ingredient identification
+Automated shopping list generation
+Integration with grocery delivery services
+Meal Planning
+Weekly meal planning calendar
+Nutrition information
+Dietary goal tracking
+Technical Considerations
+Performance Optimization
+Efficient CloudKit operations
+Image compression for API requests
+Pagination for recipe lists
+Background processing for API calls
+Offline Support
+Local caching of recipes
+Queued operations for offline recipe generation
+Sync status indicators
+Security
+Secure handling of user data
+Apple authentication integration
+API key protection
+Development Roadmap
+Phase 1: Core Functionality (Current)
+Authentication
+Recipe generation (both methods)
+Basic recipe management
+CloudKit integration
+Phase 2: UX Enhancements
+Improved loading states
+Enhanced receipt recognition
+Recipe filtering and search
+UI refinements
+Phase 3: Advanced Features
+Meal planning
+Shopping list integration
+Social sharing
+Dietary analysis
+Conclusion
+Snap2Spoon represents an innovative approach to recipe discovery by leveraging AI to transform both physical receipts and manual ingredient lists into personalized recipe suggestions. The app combines practical utility with an engaging user experience, helping users reduce food waste while discovering new culinary possibilities.
+
+The current implementation provides a solid foundation for future enhancements, with a focus on user experience, performance, and reliability. The modular architecture allows for scalable development and feature expansion as the app evolves.
+
